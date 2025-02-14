@@ -1,6 +1,9 @@
-from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import path 
+from user import views
 
-urlpatterns = [
-    path('auth/', obtain_auth_token),  # Endpoint to get token
+
+urlpatterns= [
+    path('create/',views.CreateUserView.as_view(),name='create'),
+    path('token/', views.CreateTokenView.as_view(), name='token'),
+    path('me/', views.ManageUserView.as_view(), name='me'),
 ]

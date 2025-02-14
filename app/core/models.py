@@ -5,40 +5,27 @@ from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('Email is required')
-        # normalize_email makes email addresses lowercase
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+    def create_user(self, phone, password=None, **extra_fields):
+        if not phone:
+            raise ValueError('PhoneNumber is required')
+        user = self.model(phone=phone, **extra_fields)
         user.set_password(password)  # This handles password hashing
         user.save()
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        # Superusers should have admin privileges
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
-# Create your models here.
-class Flower(models.Model):
-    name=models.CharField(max_length=100)
-    description=models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return self.name
 class User(AbstractBaseUser,PermissionsMixin):
 
-    name=models.CharField(max_length=255)
-    phone=models.CharField(max_length=15)
+    phone=models.CharField(max_length=15,primary_key=True)
     is_active=models.BooleanField(default=True)
     is_staff=models.BooleanField(default=False)
 
     objects=UserManager()
 
     USERNAME_FIELD='phone'
-
 
 class Customer(models.Model):
     user=models.OneToOneField(
@@ -47,6 +34,14 @@ class Customer(models.Model):
     firstname=models.CharField(max_length=50)
     last_tname=models.CharField(max_length=50)
     email=models.EmailField(max_length=255,unique=True)
+
+class Flower(models.Model):
+    name=models.CharField(max_length=100)
+    description=models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
 
 
 class Order(models.Model):
