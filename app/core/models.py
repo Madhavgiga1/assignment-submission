@@ -1,8 +1,10 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
-class CustomerManager(BaseUserManager):
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin, BaseUserManager
+)
+class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('Email is required')
@@ -26,17 +28,26 @@ class Flower(models.Model):
 
     def __str__(self):
         return self.name
+class User(AbstractBaseUser,PermissionsMixin):
 
-class Customer(AbstractBaseUser):
-    fname=models.CharField(max_length=100)
-    lname=models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-     
-    objects = CustomerManager()  # This line is missing - it connects your manager
-    USERNAME_FIELD = 'email'
+    name=models.CharField(max_length=255)
+    phone=models.CharField(max_length=15)
+    is_active=models.BooleanField(default=True)
+    is_staff=models.BooleanField(default=False)
+
+    objects=UserManager()
+
+    USERNAME_FIELD='phone'
+
+
+class Customer(models.Model):
+    user=models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    firstname=models.CharField(max_length=50)
+    last_tname=models.CharField(max_length=50)
+    email=models.EmailField(max_length=255,unique=True)
+
 
 class Order(models.Model):
    
