@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'core',
-    'user'
+    'user',
+    'ecommerce',
 ]
 
 MIDDLEWARE = [
@@ -127,9 +128,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 AUTH_USER_MODEL='core.User'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SPECTACULAR_SETTINGS = {
+    'COMPONENT_SPLIT_REQUEST': True,
+}
